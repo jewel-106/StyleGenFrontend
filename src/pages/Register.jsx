@@ -15,11 +15,8 @@ const Register = () => {
         try {
             const result = await register(formData.name, formData.email, formData.password);
             if (result.success) {
-                if (result.user.role === 'admin') {
-                    navigate('/admin');
-                } else {
-                    navigate('/dashboard');
-                }
+                alert('Registration successful! Please login.');
+                navigate('/login');
             } else {
                 setError(result.message);
             }

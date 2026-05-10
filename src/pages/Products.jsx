@@ -65,9 +65,9 @@ const Products = () => {
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2.5rem' }}>
                         {filteredProducts.length > 0 ? filteredProducts.map((product) => (
-                            <div key={product._id} className="card" style={{ padding: '0', border: '1px solid #EEE', borderRadius: '4px', background: '#FFF' }}>
+                            <div key={product.id} className="card" style={{ padding: '0', border: '1px solid #EEE', borderRadius: '4px', background: '#FFF' }}>
                                 <div style={{ position: 'relative', height: '320px', overflow: 'hidden' }}>
-                                    <Link to={`/products/${product._id}`}>
+                                    <Link to={`/products/${product.id}`}>
                                         <img src={imageUtil(product.image)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={product.name} />
                                     </Link>
                                     {product.discount && <span style={{ position: 'absolute', top: '15px', left: '15px', background: 'var(--primary)', color: 'white', padding: '4px 10px', fontSize: '12px', fontWeight: '900', borderRadius: '2px' }}>-{product.discount}%</span>}

@@ -12,7 +12,7 @@ const AdminCustomers = () => {
         const fetchCustomers = async () => {
             try {
                 const { data } = await api.get('/users');
-                setCustomers(data);
+                setCustomers(data.users || data.data || (Array.isArray(data) ? data : []));
             } catch (err) {
                 console.error(err);
             } finally {
@@ -48,7 +48,7 @@ const AdminCustomers = () => {
                                 <tr><td colSpan="4" style={{ padding: '3rem', textAlign: 'center' }}>Loading...</td></tr>
                             ) : (
                                 customers.map((customer) => (
-                                    <tr key={customer._id} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                                    <tr key={customer.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
                                         <td style={{ padding: '15px 20px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                 <div style={{ width: '35px', height: '35px', background: '#F3F4F6', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

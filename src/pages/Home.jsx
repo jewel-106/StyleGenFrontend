@@ -86,18 +86,18 @@ const Home = () => {
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
                         {[
-                            { name: 'Shoes', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400' },
-                            { name: 'Wallet', img: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=400' },
-                            { name: 'Belt', img: 'https://images.unsplash.com/photo-1614165939020-f71f168ba256?auto=format&fit=crop&w=400' },
-                            { name: 'Bags', img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=400' },
-                            { name: 'T-shirts', img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=400' }
+                            { name: 'Shoes', img: '/images/products/shoes.jpg' },
+                            { name: 'Wallets', img: '/images/products/wallet.jpg' },
+                            { name: 'Bags', img: '/images/products/bags.jpg' },
+                            { name: 'Belt', img: '/images/products/belt.jpg' },
+                            { name: 'T Shirts', img: '/images/products/loafers.jpg' }
                         ].map((cat) => (
-                            <div key={cat.name} style={{ textAlign: 'center' }}>
+                            <Link key={cat.name} to={`/products?category=${cat.name.toLowerCase()}`} style={{ textAlign: 'center', textDecoration: 'none', color: 'inherit' }}>
                                 <div style={{ height: '300px', background: '#F9FAFB', borderRadius: '2px', overflow: 'hidden', marginBottom: '1rem', border: '1px solid #EEE' }}>
-                                    <img src={imageUtil(cat.img)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={cat.name} />
+                                    <img src={cat.img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={cat.name} />
                                 </div>
                                 <span style={{ fontSize: '12px', fontWeight: '700', color: '#111' }}>{cat.name}</span>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 </div>
@@ -113,7 +113,7 @@ const Home = () => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '1rem' }}>
                         {products.slice(0, 5).map((product) => (
-                            <div key={product._id} className="card" style={{ background: '#FFF', border: '1px solid #F3F4F6', borderRadius: '4px' }}>
+                            <div key={product.id} className="card" style={{ background: '#FFF', border: '1px solid #F3F4F6', borderRadius: '4px' }}>
                                 <div style={{ position: 'relative', height: '280px', overflow: 'hidden' }}>
                                     <img src={imageUtil(product.image)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
                                     <span style={{ position: 'absolute', top: '10px', left: '10px', background: '#FF4D1C', color: 'white', padding: '3px 7px', fontSize: '10px', fontWeight: '900' }}>Save 20%</span>

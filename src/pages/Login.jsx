@@ -20,20 +20,21 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Login attempt for:", email);
         setError('');
         setSubmitting(true);
         try {
             const result = await login(email, password);
+            console.log("Login result:", result);
             if (result.success) {
-                if (result.user.role === 'admin') {
-                    navigate('/admin');
-                } else {
-                    navigate('/dashboard');
-                }
+                const target = result.user.role === 'admin' ? '/admin' : '/dashboard';
+                console.log("Navigating to:", target);
+                navigate(target);
             } else {
                 setError(result.message);
             }
         } catch (err) {
+            console.error("Login component error:", err);
             setError('Something went wrong. Please try again.');
         } finally {
             setSubmitting(false);

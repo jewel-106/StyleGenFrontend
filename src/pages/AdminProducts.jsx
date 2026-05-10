@@ -53,7 +53,7 @@ const AdminProducts = () => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
                 await api.delete(`/products/${id}`);
-                setProducts(products.filter(p => p._id !== id));
+                setProducts(products.filter(p => p.id !== id));
             } catch (err) {
                 alert('Failed to delete product');
             }
@@ -70,7 +70,7 @@ const AdminProducts = () => {
                 discountPrice: product.discountPrice || '',
                 description: product.description,
                 stock: product.stock,
-                category: product.category?._id || product.category || ''
+                category: product.category?.id || product.category || ''
             });
         } else {
             setEditingProduct(null);
@@ -90,7 +90,7 @@ const AdminProducts = () => {
 
         try {
             if (editingProduct) {
-                await api.put(`/products/${editingProduct._id}`, data);
+                await api.put(`/products/${editingProduct.id}`, data);
             } else {
                 await api.post('/products', data);
             }
@@ -113,10 +113,11 @@ const AdminProducts = () => {
     };
 
     // Pagination Logic
+    const safeProducts = Array.isArray(products) ? products : [];
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-    const totalPages = Math.ceil(products.length / productsPerPage);
+    const currentProducts = safeProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    const totalPages = Math.ceil(safeProducts.length / productsPerPage);
 
     return (
         <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
@@ -149,13 +150,13 @@ const AdminProducts = () => {
                                 <tr><td colSpan="4" style={{ padding: '3rem', textAlign: 'center' }}>Loading...</td></tr>
                             ) : (
                                 currentProducts.map((product) => (
-                                    <tr key={product._id} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                                    <tr key={product.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
                                         <td style={{ padding: '15px 20px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                 <img src={imageUtil(product.image)} alt="" style={{ width: '45px', height: '45px', borderRadius: '8px', objectFit: 'cover' }} />
                                                 <div>
                                                     <p style={{ fontWeight: '800', margin: 0 }}>{product.name}</p>
-                                                    <p style={{ fontSize: '11px', color: '#999', margin: 0 }}>SKU: SG-{product._id.slice(-5).toUpperCase()}</p>
+                                                    <p style={{ fontSize: '11px', color: '#999', margin: 0 }}>SKU: SG-{String(product.id).padStart(5, '0')}</p>
                                                 </div>
                                             </div>
                                         </td>
@@ -165,7 +166,7 @@ const AdminProducts = () => {
                                             <div style={{ display: 'flex', gap: '10px' }}>
                                                 <button onClick={() => handleViewProduct(product)} style={{ color: '#666', border: 'none', background: 'none', cursor: 'pointer' }}><Eye size={18} /></button>
                                                 <button onClick={() => handleOpenModal(product)} style={{ color: '#666', border: 'none', background: 'none', cursor: 'pointer' }}><Edit size={18} /></button>
-                                                <button onClick={() => handleDelete(product._id)} style={{ color: '#EF4444', border: 'none', background: 'none', cursor: 'pointer' }}><Trash2 size={18} /></button>
+                                                <button onClick={() => handleDelete(product.id)} style={{ color: '#EF4444', border: 'none', background: 'none', cursor: 'pointer' }}><Trash2 size={18} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -224,7 +225,7 @@ const AdminProducts = () => {
                                 <input required type="number" placeholder="Stock" value={formData.stock} onChange={(e) => setFormData({ ...formData, stock: e.target.value })} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #EEE' }} />
                                 <select required value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #EEE' }}>
                                     <option value="">Category</option>
-                                    {categories.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
+                                    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                 </select>
                                 <input type="file" onChange={(e) => setSelectedFile(e.target.files[0])} />
                                 <textarea placeholder="Description" rows="3" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} style={{ width: '100%', gridColumn: 'span 2', padding: '12px', borderRadius: '8px', border: '1px solid #EEE' }}></textarea>

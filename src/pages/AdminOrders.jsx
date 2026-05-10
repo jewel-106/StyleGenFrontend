@@ -1,4 +1,8 @@
+import { useState, useEffect } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
 import AdminHeader from '../components/AdminHeader';
+import api from '../api/api';
+import { Clock } from 'lucide-react';
 
 const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -8,7 +12,7 @@ const AdminOrders = () => {
         const fetchOrders = async () => {
             try {
                 const { data } = await api.get('/orders');
-                setOrders(data.orders || data);
+                setOrders(data.orders || data.data || (Array.isArray(data) ? data : []));
             } catch (err) {
                 console.error(err);
             } finally {
@@ -43,9 +47,9 @@ const AdminOrders = () => {
                             {loading ? (
                                 <tr><td colSpan="4" style={{ padding: '3rem', textAlign: 'center' }}>Loading...</td></tr>
                             ) : (
-                                orders.length > 0 ? orders.map((order) => (
-                                    <tr key={order._id} style={{ borderBottom: '1px solid #F3F4F6' }}>
-                                        <td style={{ padding: '15px 20px', fontWeight: '800', fontSize: '12px' }}>#{order._id.slice(-6).toUpperCase()}</td>
+                                (Array.isArray(orders) ? orders : []).length > 0 ? (Array.isArray(orders) ? orders : []).map((order) => (
+                                    <tr key={order.id} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                                        <td style={{ padding: '15px 20px', fontWeight: '800', fontSize: '12px' }}>#{String(order.id).padStart(5, '0')}</td>
                                         <td style={{ padding: '15px 20px' }}>{order.user?.name || 'Guest'}</td>
                                         <td style={{ padding: '15px 20px', fontWeight: '700' }}>BDT {order.totalPrice}</td>
                                         <td style={{ padding: '15px 20px' }}>

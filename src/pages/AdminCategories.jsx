@@ -11,6 +11,7 @@ const AdminCategories = () => {
     const [name, setName] = useState('');
     const [editingCategory, setEditingCategory] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         fetchCategories();
@@ -31,17 +32,31 @@ const AdminCategories = () => {
         if (cat) {
             setEditingCategory(cat);
             setName(cat.name);
+            setDescription(cat.description || '');
         } else {
             setEditingCategory(null);
             setName('');
+            setDescription('');
         }
         setShowModal(true);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        alert('Workshop Mode: This feature will be implemented live during the session!');
-        setShowModal(false);
+        setSubmitting(true);
+        try {
+            if (editingCategory) {
+                await api.put(`/category/${editingCategory.id}`, { name, description });
+            } else {
+                await api.post('/category', { name, description });
+            }
+            setShowModal(false);
+            fetchCategories();
+        } catch (error) {
+            alert(error.response?.data?.message || 'Operation failed');
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     const handleDelete = async (id) => {
@@ -91,13 +106,13 @@ const AdminCategories = () => {
                                 <tr><td colSpan="3" style={{ padding: '4rem', textAlign: 'center', fontWeight: '800' }}>LOADING DATA...</td></tr>
                             ) : (
                                 categories.map((cat) => (
-                                    <tr key={cat._id} style={{ borderBottom: '1px solid #F9FAFB' }}>
+                                    <tr key={cat.id} style={{ borderBottom: '1px solid #F9FAFB' }}>
                                         <td style={{ padding: '20px', fontWeight: '800', color: '#111', fontSize: '15px' }}>{cat.name}</td>
                                         <td style={{ padding: '20px', color: '#666', fontWeight: '600' }}>{cat.slug || cat.name.toLowerCase().replace(' ', '-')}</td>
                                         <td style={{ padding: '20px', textAlign: 'right' }}>
                                             <div style={{ display: 'flex', gap: '15px', justifyContent: 'flex-end' }}>
                                                 <button onClick={() => handleOpenModal(cat)} style={{ color: '#666', border: 'none', background: 'none', cursor: 'pointer' }}><Edit size={18} /></button>
-                                                <button onClick={() => handleDelete(cat._id)} style={{ color: '#EF4444', border: 'none', background: 'none', cursor: 'pointer' }}><Trash2 size={18} /></button>
+                                                <button onClick={() => handleDelete(cat.id)} style={{ color: '#EF4444', border: 'none', background: 'none', cursor: 'pointer' }}><Trash2 size={18} /></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -116,13 +131,22 @@ const AdminCategories = () => {
                             <button onClick={() => setShowModal(false)} style={{ border: 'none', background: '#F1F1F1', color: '#666', padding: '8px', borderRadius: '50%', cursor: 'pointer' }}><X size={20} /></button>
                         </div>
                         <form onSubmit={handleSubmit}>
-                            <div style={{ marginBottom: '2.5rem' }}>
+                            <div style={{ marginBottom: '1.5rem' }}>
                                 <label style={{ display: 'block', fontSize: '12px', fontWeight: '900', marginBottom: '10px', color: '#999', letterSpacing: '1px' }}>CATEGORY NAME</label>
                                 <input
                                     required
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="e.g. Leather Goods"
+                                    style={{ width: '100%', padding: '15px', borderRadius: '10px', border: '1px solid #EEE', background: '#FBFBFC', fontWeight: '700', fontSize: '15px', marginBottom: '1rem' }}
+                                />
+                                <label style={{ display: 'block', fontSize: '12px', fontWeight: '900', marginBottom: '10px', color: '#999', letterSpacing: '1px' }}>DESCRIPTION</label>
+                                <textarea
+                                    required
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    placeholder="Brief description of this collection"
+                                    rows="3"
                                     style={{ width: '100%', padding: '15px', borderRadius: '10px', border: '1px solid #EEE', background: '#FBFBFC', fontWeight: '700', fontSize: '15px' }}
                                 />
                             </div>

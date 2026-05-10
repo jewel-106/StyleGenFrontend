@@ -24,15 +24,26 @@ const Categories = () => {
     const imageUtil = (path) => getImageUrl(path, API_URL);
 
     const getCatImage = (cat) => {
-        if (cat.image) return imageUtil(cat.image);
         const fallbacks = {
-            'Shoes': 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800',
-            'Wallet': 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800',
-            'Bags': 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800',
-            'Belt': 'https://images.unsplash.com/photo-1614165939020-f71f168ba256?auto=format&fit=crop&w=800',
-            'T-Shirt': 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800'
+            'shoes': '/images/products/shoes.jpg',
+            'wallet': '/images/products/wallet.jpg',
+            'bags': '/images/products/bags.jpg',
+            'belt': '/images/products/belt.jpg',
+            't-shirt': '/images/products/loafers.jpg',
+            't shirts': '/images/products/loafers.jpg',
+            't-shirts': '/images/products/loafers.jpg',
+            'watch': '/images/products/belt.jpg', // Using belt or similar if watch.jpg missing
+            'sunglasses': '/images/products/shoes.jpg',
+            'cap': '/images/products/shoes.jpg'
         };
-        return fallbacks[cat.name] || 'https://images.unsplash.com/photo-1473188588955-719548761567?auto=format&fit=crop&w=800';
+
+        const fallback = fallbacks[cat.name.toLowerCase()];
+        if (fallback) return fallback;
+
+        if (cat.image && cat.image.startsWith('http')) return cat.image;
+        if (cat.image) return imageUtil(cat.image);
+
+        return '/images/products/shoes.jpg';
     };
 
     if (loading) return <div style={{ padding: '10rem', textAlign: 'center', fontWeight: '900', color: '#111' }}>LOADING MASTERPIECES...</div>;
@@ -48,8 +59,8 @@ const Categories = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '2.5rem' }}>
                     {categories.map((cat) => (
                         <Link
-                            to={`/products?category=${cat._id}`}
-                            key={cat._id}
+                            to={`/products?category=${cat.id}`}
+                            key={cat.id}
                             style={{ textDecoration: 'none', color: 'inherit', position: 'relative', height: '480px', overflow: 'hidden', borderRadius: '12px', background: '#000' }}
                         >
                             <img
